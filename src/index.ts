@@ -1,5 +1,6 @@
 // 1. importera det jag behöver från viem
 import { createPublicClient, erc20Abi, parseAbi, http } from "viem"
+import { getStorageAt } from "viem/actions";
 import { mainnet } from "viem/chains"
 // 2. skapa en client mot mainnet
 const client = createPublicClient({
@@ -59,3 +60,20 @@ const ownerAbi = parseAbi([
   else  {
     console.log("Owner is a wallet");
   }
+
+  // 12. definiera slot för implementation och admin
+  const IMPL_SLOT = "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc";
+const ADMIN_SLOT = "0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103";
+// 13. läs implementationsadressen med getStorageAt
+const impSlot = await client.getStorageAt({
+    address: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+    slot: IMPL_SLOT
+});
+// 14. skriv ut om det är en proxy eller inte
+const emptySlot = "0x0000000000000000000000000000000000000000000000000000000000000000";
+console.log("impSlot raw:", impSlot);
+if (impSlot && impSlot !== emptySlot) {
+    console.log("Proxy (EIP-1967) hittad. Implementation slot:", impSlot);
+} else {
+    console.log("Ingen EIP-1967-proxy hittad. Kan ändå vara en annan proxy-typ, verifiera på Etherscan.");
+}
