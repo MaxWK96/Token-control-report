@@ -2,6 +2,7 @@
 import { createPublicClient, erc20Abi, parseAbi, http } from "viem"
 import { getStorageAt } from "viem/actions";
 import { mainnet } from "viem/chains"
+import { formatUnits } from "viem";
 // 2. skapa en client mot mainnet
 const client = createPublicClient({
 chain : mainnet,
@@ -77,3 +78,14 @@ if (impSlot && impSlot !== emptySlot) {
 } else {
     console.log("Ingen EIP-1967-proxy hittad. Kan ändå vara en annan proxy-typ, verifiera på Etherscan.");
 }
+// 15. räkna om supply till läsbart tal med formatUnits
+formatUnits(totalSupply, decimaler)
+// 16. skriv ut en samlad rapport
+console.log("\n===== TOKEN CONTROL REPORT =====");
+console.log("Token:         ", name, "(" + symbol + ")");
+console.log("Decimals:      ", decimaler);
+console.log("Total supply:  ", formatUnits(totalSupply, decimaler));
+console.log("Owner:         ", owner);
+console.log("Owner type:    ", ownerCode ? "Contract" : "Wallet (EOA)");
+console.log("Proxy (1967):  ", (impSlot && impSlot !== emptySlot) ? "Yes" : "Not found");
+console.log("================================\n");
