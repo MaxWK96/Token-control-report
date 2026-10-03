@@ -36,3 +36,26 @@ const totalSupply = await client.readContract({
 console.log("Supply:", totalSupply);
 
 // 7. skriv ut allt
+
+// 8. definiera en egen ABI för owner()
+const ownerAbi = parseAbi([
+  "function owner() view returns (address)",
+  ]);
+// 9. läs owner
+  const owner = await client.readContract({
+    address: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+    abi: ownerAbi,
+    functionName: "owner",
+  });
+  console.log("Owner:", owner);
+// 10. kolla om owner har kod (kontrakt) eller inte (plånbok)
+  const ownerCode = await client.getCode({
+    address: "0xFcb19e6a322b27c06842A71e8c725399f049AE3a"
+  });
+// 11. skriv ut owner och vilken typ det är
+  if (ownerCode)  {
+    console.log("Owner is a contract");
+  }
+  else  {
+    console.log("Owner is a wallet");
+  }
